@@ -145,6 +145,54 @@ public class HhApiGetTest {
         Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
         Assert.assertNotNull(response.jsonPath().get("items").getClass());
     }
+    @Test
+    void LowerRu() {
+        RequestSpecification httpRequest = RestAssured.given();
+        Response response = httpRequest.request(Method.GET, "https://api.hh.ru/vacancies?text=продавец");
+        Assert.assertEquals(response.statusCode(), 200);
+        Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
+        Assert.assertNotNull(response.jsonPath().get("items").getClass());
+        Assert.assertTrue(response.body().asString().contains("продавец"));
+    }
+    @Test
+    void CapitalRu() {
+        RequestSpecification httpRequest = RestAssured.given();
+        Response response = httpRequest.request(Method.GET, "https://api.hh.ru/vacancies?text=САНТЕХНИК");
+        Assert.assertEquals(response.statusCode(), 200);
+        Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
+        Assert.assertNotNull(response.jsonPath().get("items").getClass());
+        Assert.assertTrue(response.body().asString().contains("Сантехник"));
+    }
+    @Test
+    void AndRu() {
+        RequestSpecification httpRequest = RestAssured.given();
+        Response response = httpRequest.request(Method.GET, "https://api.hh.ru/vacancies?text=САНТЕХНИК AND скалолаз");
+        Assert.assertEquals(response.statusCode(), 200);
+        Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
+        Assert.assertNotNull(response.jsonPath().get("items").getClass());
+        Assert.assertFalse(response.body().asString().contains("Сантехник")&&response.body().asString().contains("Скалолаз"));
+    }
+    @Test
+    void OrRu() {
+        RequestSpecification httpRequest = RestAssured.given();
+        Response response = httpRequest.request(Method.GET, "https://api.hh.ru/vacancies?text=САНТЕХНИК OR теплотехник");
+        Assert.assertEquals(response.statusCode(), 200);
+        Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
+        Assert.assertNotNull(response.jsonPath().get("items").getClass());
+        Assert.assertTrue(response.body().asString().contains("Сантехник")&&response.body().asString().contains("Теплотехник"));
+    }
+    @Test
+    void OrAndNotRu() {
+        RequestSpecification httpRequest = RestAssured.given();
+        Response response = httpRequest.request(Method.GET, "https://api.hh.ru/vacancies?text=(программист OR слесарь) AND \"работать в команде\" AND NOT Java");
+        Assert.assertEquals(response.statusCode(), 200);
+        Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
+        Assert.assertNotNull(response.jsonPath().get("items").getClass());
+        Assert.assertTrue(response.body().asString().contains("Программист")
+                ||response.body().asString().contains("Cлесарь")
+                &&response.body().asString().contains("работать в команде"));
+        Assert.assertFalse(response.body().asString().contains("java"));
+    }
 }
 
 
