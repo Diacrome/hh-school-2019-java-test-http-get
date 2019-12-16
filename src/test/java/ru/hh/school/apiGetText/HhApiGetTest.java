@@ -179,7 +179,7 @@ public class HhApiGetTest {
         Assert.assertEquals(response.statusCode(), 200);
         Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
         Assert.assertNotNull(response.jsonPath().get("items").getClass());
-        Assert.assertTrue(response.body().asString().contains("Сантехник")&&response.body().asString().contains("Теплотехник"));
+        Assert.assertTrue(response.body().asString().contains("Сантехник")||response.body().asString().contains("Теплотехник"));
     }
     @Test
     void OrAndNotRu() {
@@ -196,12 +196,13 @@ public class HhApiGetTest {
     @Test
     void RuBasicAnd() {
         RequestSpecification httpRequest = RestAssured.given();
-        Response response = httpRequest.request(Method.GET, "https://api.hh.ru/vacancies?text=\"холодильное\"AND\"торговое\"");
+        Response response = httpRequest.request(Method.GET, "https://api.hh.ru/vacancies?text=\"экономика\"AND\"политика\"");
         Assert.assertEquals(response.statusCode(), 200);
         Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
         Assert.assertNotNull(response.jsonPath().get("items").getClass());
-        Assert.assertTrue(response.body().asString().contains("холодильное")
-                ||response.body().asString().contains("торговое"));
+        Assert.assertTrue(response.body().asString().contains("экономика")
+                &&response.body().asString().contains("политика"));
+
     }
 }
 
