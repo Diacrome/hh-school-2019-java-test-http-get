@@ -193,6 +193,17 @@ public class HhApiGetTest {
                 &&response.body().asString().contains("работать в команде"));
         Assert.assertFalse(response.body().asString().contains("java"));
     }
+    @Test
+    void RuBasicAnd() {
+        RequestSpecification httpRequest = RestAssured.given();
+        Response response = httpRequest.request(Method.GET, "https://api.hh.ru/vacancies?text=\"холодильное\"AND\"торговое\"");
+        Assert.assertEquals(response.statusCode(), 200);
+        Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
+        Assert.assertNotNull(response.jsonPath().get("items").getClass());
+        Assert.assertTrue(response.body().asString().contains("холодильное")
+                ||response.body().asString().contains("торговое"));
+    }
 }
+
 
 
