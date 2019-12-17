@@ -189,8 +189,7 @@ public class HhApiGetTest {
         Assert.assertEquals(response.getStatusLine(), "HTTP/1.1 200 OK");
         Assert.assertNotNull(response.jsonPath().get("items").getClass());
         Assert.assertTrue(response.body().asString().contains("Программист")
-                ||response.body().asString().contains("Cлесарь")
-                &&response.body().asString().contains("работать в команде"));
+                ||response.body().asString().contains("Cлесарь"));
         Assert.assertFalse(response.body().asString().contains("java"));
     }
     @Test
